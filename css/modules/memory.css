@@ -1,0 +1,7 @@
+.memory__card {
+	padding: 1rem;
+}
+
+.memory__card--flipped {
+	background-color: rebeccapurple;
+}

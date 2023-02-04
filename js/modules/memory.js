@@ -9,23 +9,23 @@ export default function Memory() {
 	let flips = 0;
 	let previousClickedCardID = null;
 
-	const cardsContainerEl = document.querySelector('.memory__cards-container')
-	let cardEl = null;
+	const cardsContainerElement = document.querySelector('.memory__cards-container')
+	let cardElements = null;
 
 	function setQuerySelectors() {
-		cardEl = document.querySelectorAll('.memory__card');
+		cardElements = document.querySelectorAll('.memory__card');
 	} 
 
 	function setEventListeners() {
-		for (let index = 0; index < cardEl.length; index += 1) {
-			cardEl[index].addEventListener('click', () => {
+		for (let index = 0; index < cardElements.length; index += 1) {
+			cardElements[index].addEventListener('click', () => {
 				handleCardButtonClick(index);
 			})
 		}
 	}
 
-	function handleCardButtonClick(cardElIndex) {
-		const clickedCard = cards[cardElIndex];
+	function handleCardButtonClick(cardElementIndex) {
+		const clickedCard = cards[cardElementIndex];
 
 		clickedCard.flipped = true;
 		flips += 1;
@@ -48,6 +48,7 @@ export default function Memory() {
 
 		previousClickedCardID = clickedCard.ID;
 		console.log(cards);
+		renderHTML();
 	}
 
 	function setIsRoundOver() {
@@ -96,23 +97,35 @@ export default function Memory() {
 	}
 
 	function renderHTML() {
-		cardsContainerEl.innerHTML = '';
+		renderAllCards();
+		renderFlippedCards();
 
-		for(const card of cards) {
-			const cardEl = document.createElement('button');
-			cardEl.innerText = `${card.ID}`;
-			cardEl.className = 'memory__card';
-			cardsContainerEl.append(cardEl);
+
+		function renderAllCards() {
+			cardsContainerElement.innerHTML = '';
+
+			for (const card of cards) {
+				const cardElement = document.createElement('button');
+				cardElement.innerText = `${card.ID}`;
+				cardElement.className = 'memory__card';
+				cardsContainerElement.append(cardElement);
+			}
+
+			setQuerySelectors();
+			setEventListeners();
 		}
-
-		setQuerySelectors();
-		setEventListeners();
+		
+		function renderFlippedCards() {
+			for (let index = 0; index < cards.length; index += 1) {
+				if (cards[index].flipped) {
+					cardElements[index].classList.add('memory__card--flipped');
+				}
+			}
+		}
 	}
  
 	// Called functions
 	shuffleCards();
 	cardsCopy = returnDeepCopy(cards);
 	renderHTML();
-
-	console.log(cards);
 }
