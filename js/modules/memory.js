@@ -4,6 +4,8 @@ export default function Memory() {
 
 	const cards = returnCreateCards();
 
+	const cardsContainerEl = document.querySelector('.memory__cards-container')
+
 	function returnCreateCards() {
 		let newCards = [];
 
@@ -28,8 +30,20 @@ export default function Memory() {
 		}
 	}
 
+	function renderHTML() {
+		cardsContainerEl.innerHTML = '';
+
+		for(const card of cards) {
+			const cardEl = document.createElement('button');
+			cardEl.innerText = `${card.ID}`
+			cardEl.className = 'button';
+			cardsContainerEl.append(cardEl);
+		}
+	}
+
 	// Called functions
 	shuffleCards();
+	renderHTML();
 
 	console.log(cards);
 }
