@@ -5,6 +5,7 @@ export default function Memory() {
 	const cards = returnCreateCards();
 
 	const cardsContainerEl = document.querySelector('.memory__cards-container')
+	let cardButtons = null;
 
 	function returnCreateCards() {
 		let newCards = [];
@@ -35,12 +36,27 @@ export default function Memory() {
 
 		for(const card of cards) {
 			const cardEl = document.createElement('button');
-			cardEl.innerText = `${card.ID}`
-			cardEl.className = 'button';
+			cardEl.innerText = `${card.ID}`;
+			cardEl.className = 'memory__card';
 			cardsContainerEl.append(cardEl);
 		}
+
+		setQuerySelectors();
+		setEventListeners();
 	}
 
+	function setQuerySelectors() {
+		cardButtons = document.querySelectorAll('.memory__card');
+	} 
+
+	function setEventListeners() {
+		for (let index = 0; index < cardButtons.length; index += 1) {
+			cardButtons[index].addEventListener('click', () => {
+				console.log(index);
+			})
+		}
+	}
+ 
 	// Called functions
 	shuffleCards();
 	renderHTML();
