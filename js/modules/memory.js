@@ -2,10 +2,66 @@ export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
 
-	const cards = returnCreateCards();
+	let cards = returnCreateCards();
+	let cardsCopy = null;
+
+	let isRoundOver = false;
+	let flips = 0;
+	let previousClickedCardID = null;
 
 	const cardsContainerEl = document.querySelector('.memory__cards-container')
-	let cardButtons = null;
+	let cardEl = null;
+
+	function setQuerySelectors() {
+		cardEl = document.querySelectorAll('.memory__card');
+	} 
+
+	function setEventListeners() {
+		for (let index = 0; index < cardEl.length; index += 1) {
+			cardEl[index].addEventListener('click', () => {
+				handleCardButtonClick(index);
+			})
+		}
+	}
+
+	function handleCardButtonClick(cardElIndex) {
+		const clickedCard = cards[cardElIndex];
+
+		clickedCard.flipped = true;
+		flips += 1;
+
+		setIsRoundOver();
+
+		if (isRoundOver) {
+			console.log('its over');
+			const isMatch = returnCheckIsMatch(clickedCard.ID);
+
+			if (isMatch) {
+				cardsCopy = returnDeepCopy(cards);
+			} else {
+				cards = returnDeepCopy(cardsCopy)
+			}
+
+			flips = 0;
+			isRoundOver = false;
+		}
+
+		previousClickedCardID = clickedCard.ID;
+		console.log(cards);
+	}
+
+	function setIsRoundOver() {
+		const maxFlips = numbersOfIdenticalCards;
+
+		if (flips === maxFlips) {
+			isRoundOver = true;
+		}
+	}
+
+	function returnDeepCopy(cards) {
+		const cardsStringed = JSON.stringify(cards);
+		return JSON.parse(cardsStringed);
+	}
 
 	function returnCreateCards() {
 		let newCards = [];
@@ -21,6 +77,14 @@ export default function Memory() {
 		}
 
 		return newCards;	
+	}
+
+	function returnCheckIsMatch(clickedCardID) {
+		if (clickedCardID === previousClickedCardID) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	function shuffleCards() {
@@ -44,21 +108,10 @@ export default function Memory() {
 		setQuerySelectors();
 		setEventListeners();
 	}
-
-	function setQuerySelectors() {
-		cardButtons = document.querySelectorAll('.memory__card');
-	} 
-
-	function setEventListeners() {
-		for (let index = 0; index < cardButtons.length; index += 1) {
-			cardButtons[index].addEventListener('click', () => {
-				console.log(index);
-			})
-		}
-	}
  
 	// Called functions
 	shuffleCards();
+	cardsCopy = returnDeepCopy(cards);
 	renderHTML();
 
 	console.log(cards);
