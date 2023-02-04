@@ -33,7 +33,6 @@ export default function Memory() {
 		setIsRoundOver();
 
 		if (isRoundOver) {
-			console.log('its over');
 			const isMatch = returnCheckIsMatch(clickedCard.ID);
 
 			if (isMatch) {
@@ -97,35 +96,56 @@ export default function Memory() {
 	}
 
 	function renderHTML() {
-		renderAllCards();
 		renderFlippedCards();
-
-
-		function renderAllCards() {
-			cardsContainerElement.innerHTML = '';
-
-			for (const card of cards) {
-				const cardElement = document.createElement('button');
-				cardElement.innerText = `${card.ID}`;
-				cardElement.className = 'memory__card';
-				cardsContainerElement.append(cardElement);
-			}
-
-			setQuerySelectors();
-			setEventListeners();
-		}
 		
 		function renderFlippedCards() {
 			for (let index = 0; index < cards.length; index += 1) {
 				if (cards[index].flipped) {
 					cardElements[index].classList.add('memory__card--flipped');
+				} else {
+					cardElements[index].classList.remove('memory__card--flipped');
 				}
 			}
 		}
+	}
+
+	function renderAllCards() {
+		cardsContainerElement.innerHTML = '';
+
+		for (const card of cards) {
+			const cardButton = document.createElement('button');
+			const cardFrontBackContainer = document.createElement('div');
+			const cardFront = document.createElement('div');
+			const cardFrontImage = document.createElement('img');
+			const cardBack = document.createElement('div');
+			const cardBackText = document.createElement('div');
+
+			// cardBackText.innerText = '?';
+			cardBackText.innerText = `${card.ID}`;
+
+			cardFrontImage.src = '/assets/img/oro.jpg'
+
+			cardButton.className = 'memory__card';
+			cardFrontBackContainer.className = 'memory__card-front-back-container';
+			cardFront.className = 'memory__card-front';
+			cardBack.className = 'memory__card-back';
+			cardBackText.className = 'memory__card-back-text';
+
+			cardFront.append(cardFrontImage);
+			cardBack.append(cardBackText);
+			cardFrontBackContainer.append(cardFront);
+			cardFrontBackContainer.append(cardBack);
+			cardButton.append(cardFrontBackContainer);
+			cardsContainerElement.append(cardButton);
+		}
+
+		setQuerySelectors();
+		setEventListeners();
 	}
  
 	// Called functions
 	shuffleCards();
 	cardsCopy = returnDeepCopy(cards);
+	renderAllCards();
 	renderHTML();
 }
