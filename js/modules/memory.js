@@ -20,5 +20,16 @@ export default function Memory() {
 		return newCards;	
 	}
 
+	function shuffleCards() {
+		for (let index = cards.length - 1; index > 0; index -= 1) {
+			const randomIndex = Math.floor(Math.random() * (index + 1));
+	
+			[cards[index], cards[randomIndex]] = [cards[randomIndex], cards[index]];
+		}
+	}
+
+	// Called functions
+	shuffleCards();
+
 	console.log(cards);
 }
