@@ -9,23 +9,23 @@ export default function Memory() {
 	let flips = 0;
 	let previousClickedCardID = null;
 
-	const cardsContainerEl = document.querySelector('.memory__cards-container')
-	let cardEl = null;
+	const cardsContainerElement = document.querySelector('.memory__cards-container')
+	let cardElements = null;
 
 	function setQuerySelectors() {
-		cardEl = document.querySelectorAll('.memory__card');
+		cardElements = document.querySelectorAll('.memory__card');
 	} 
 
 	function setEventListeners() {
-		for (let index = 0; index < cardEl.length; index += 1) {
-			cardEl[index].addEventListener('click', () => {
+		for (let index = 0; index < cardElements.length; index += 1) {
+			cardElements[index].addEventListener('click', () => {
 				handleCardButtonClick(index);
 			})
 		}
 	}
 
-	function handleCardButtonClick(cardElIndex) {
-		const clickedCard = cards[cardElIndex];
+	function handleCardButtonClick(cardElementIndex) {
+		const clickedCard = cards[cardElementIndex];
 
 		clickedCard.flipped = true;
 		flips += 1;
@@ -33,7 +33,6 @@ export default function Memory() {
 		setIsRoundOver();
 
 		if (isRoundOver) {
-			console.log('its over');
 			const isMatch = returnCheckIsMatch(clickedCard.ID);
 
 			if (isMatch) {
@@ -48,6 +47,7 @@ export default function Memory() {
 
 		previousClickedCardID = clickedCard.ID;
 		console.log(cards);
+		renderHTML();
 	}
 
 	function setIsRoundOver() {
@@ -96,13 +96,47 @@ export default function Memory() {
 	}
 
 	function renderHTML() {
-		cardsContainerEl.innerHTML = '';
+		renderFlippedCards();
+		
+		function renderFlippedCards() {
+			for (let index = 0; index < cards.length; index += 1) {
+				if (cards[index].flipped) {
+					cardElements[index].classList.add('memory__card--flipped');
+				} else {
+					cardElements[index].classList.remove('memory__card--flipped');
+				}
+			}
+		}
+	}
 
-		for(const card of cards) {
-			const cardEl = document.createElement('button');
-			cardEl.innerText = `${card.ID}`;
-			cardEl.className = 'memory__card';
-			cardsContainerEl.append(cardEl);
+	function renderAllCards() {
+		cardsContainerElement.innerHTML = '';
+
+		for (const card of cards) {
+			const cardButton = document.createElement('button');
+			const cardFrontBackContainer = document.createElement('div');
+			const cardFront = document.createElement('div');
+			const cardFrontImage = document.createElement('img');
+			const cardBack = document.createElement('div');
+			const cardBackText = document.createElement('div');
+
+			// cardBackText.innerText = '?';
+			cardBackText.innerText = `${card.ID}`;
+
+			cardFrontImage.src = '/assets/img/oro.jpg'
+
+			cardButton.className = 'memory__card';
+			cardFrontBackContainer.className = 'memory__card-front-back-container';
+			cardFront.className = 'memory__card-front';
+			cardBack.className = 'memory__card-back';
+			cardBackText.className = 'memory__card-back-text';
+
+			cardFront.append(cardFrontImage);
+			cardBack.append(cardBackText);
+			cardFrontBackContainer.append(cardFront);
+			cardFrontBackContainer.append(cardBack);
+			cardButton.append(cardFrontBackContainer);
+			cardsContainerElement.append(cardButton);
 		}
 
 		setQuerySelectors();
@@ -112,7 +146,6 @@ export default function Memory() {
 	// Called functions
 	shuffleCards();
 	cardsCopy = returnDeepCopy(cards);
+	renderAllCards();
 	renderHTML();
-
-	console.log(cards);
 }
