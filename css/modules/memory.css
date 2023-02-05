@@ -91,3 +91,27 @@
 .memory__button:active {
 	background-color: var(--primary-color-darker);
 }
+
+.memory__announcement {
+	display: none;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100vw;
+	height: 100vw;
+	height: 100dvh;
+	padding: 0.5rem;
+	background-color: var(--secondary-color);
+}
+
+.memory__announcement--open {
+	display: flex;
+}
+
+.memory__announcement-message {
+	text-align: center;
+}

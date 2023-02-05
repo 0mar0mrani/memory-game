@@ -9,20 +9,28 @@ export default function Memory() {
 	let cards = returnCreateCards();
 	let cardsCopy = null;
 
+	let isGameOver = false;
 	let isRoundOver = false;
 	let flips = 0;
 	let previousClickedCardID = null;
 
+	let announcementMessage = null;
+
 	const cardsContainerElement = document.querySelector('.memory__cards-container');
 	const attemptsElement = document.querySelector('.memory__attempts');
-	const resetButton = document.querySelector('.memory__button-reset');
+	const resetButtonElements = document.querySelectorAll('.memory__button-reset');
+	const announcementElement = document.querySelector('.memory__announcement');
+	const announcementMessageElement = document.querySelector('.memory__announcement-message');
 	let cardElements = null;
 
 	function setQuerySelectors() {
 		cardElements = document.querySelectorAll('.memory__card');
 	} 
 
-	resetButton.addEventListener('click', handleResetButtonClick);
+	for (const resetButton of resetButtonElements) {
+		resetButton.addEventListener('click', handleResetButtonClick);
+	}
+
 
 	function setEventListeners() {
 		for (let index = 0; index < cardElements.length; index += 1) {
@@ -59,6 +67,13 @@ export default function Memory() {
 				} else {
 					cards = returnDeepCopy(cardsCopy);
 					attempts += 1;
+
+					if (attempts >= maxAttempts) {
+						isGameOver = true;
+						announcementMessage = 'You lost, try again!';
+					} else {
+						isGameOver = false;
+					}
 				}
 				
 				flips = 0;
@@ -80,6 +95,7 @@ export default function Memory() {
 	function initGame() {
 		attempts = 0;
 		isRoundOver = false;
+		isGameOver = false;
 		flips = 0;
 		previousClickedCardID = null;
 		cards = returnCreateCards();
@@ -136,7 +152,8 @@ export default function Memory() {
 	function renderHTML() {
 		renderAttempts();
 		renderFlippedCards();
-		
+		renderAnnouncement();
+
 		function renderAttempts() {
 			attemptsElement.innerText = `Attempts: ${attempts}/${maxAttempts}`;
 		}
@@ -148,6 +165,15 @@ export default function Memory() {
 				} else {
 					cardElements[index].classList.remove('memory__card--flipped');
 				}
+			}
+		}
+
+		function renderAnnouncement() {
+			if (isGameOver) {
+				announcementElement.classList.add('memory__announcement--open');
+				announcementMessageElement.innerText = announcementMessage;
+			} else {
+				announcementElement.classList.remove('memory__announcement--open');
 			}
 		}
 	}
