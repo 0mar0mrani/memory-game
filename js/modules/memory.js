@@ -15,11 +15,14 @@ export default function Memory() {
 
 	const cardsContainerElement = document.querySelector('.memory__cards-container');
 	const attemptsElement = document.querySelector('.memory__attempts');
+	const resetButton = document.querySelector('.memory__button-reset');
 	let cardElements = null;
 
 	function setQuerySelectors() {
 		cardElements = document.querySelectorAll('.memory__card');
 	} 
+
+	resetButton.addEventListener('click', handleResetButtonClick);
 
 	function setEventListeners() {
 		for (let index = 0; index < cardElements.length; index += 1) {
@@ -27,6 +30,11 @@ export default function Memory() {
 				handleCardElementClick(index);
 			})
 		}
+	}
+
+	function handleResetButtonClick() {
+		initGame();
+		renderHTML();
 	}
 
 	function handleCardElementClick(cardElementIndex) {
@@ -67,6 +75,17 @@ export default function Memory() {
 		}
 
 		renderHTML();
+	}
+
+	function initGame() {
+		attempts = 0;
+		isRoundOver = false;
+		flips = 0;
+		previousClickedCardID = null;
+		cards = returnCreateCards();
+		shuffleCards();
+		renderAllCards();
+		cardsCopy = returnDeepCopy(cards);
 	}
 
 	function setIsRoundOver() {
