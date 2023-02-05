@@ -8,6 +8,10 @@
 	padding: 0.5rem;
 }
 
+.memory__attempts {
+	font-size: var(--font-big);
+}
+
 .memory__cards-container {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
