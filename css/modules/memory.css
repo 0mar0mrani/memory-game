@@ -2,10 +2,12 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
-	width: 100vw;
+	width: 100%;
+	max-width: 24rem;
 	height: 100vh;
 	height: 100dvh;
 	padding: 0.5rem;
+	position: relative;
 }
 
 .memory__attempts {
@@ -13,6 +15,7 @@
 }
 
 .memory__cards-container {
+	width: 100%;
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 0.5rem;
