@@ -51,7 +51,6 @@ export default function Memory() {
 		clickedCard.flipped = true;
 		flips += 1;
 
-
 		setIsRoundOver();
 
 		if (isRoundOver) {
@@ -64,6 +63,11 @@ export default function Memory() {
 
 				if (isMatch) {
 					cardsCopy = returnDeepCopy(cards);
+					const isWinner = returnCheckIfWinner();
+					if (isWinner) {
+						isGameOver = true;
+						announcementMessage = 'You won!';
+					}
 				} else {
 					cards = returnDeepCopy(cardsCopy);
 					attempts += 1;
@@ -90,6 +94,18 @@ export default function Memory() {
 		}
 
 		renderHTML();
+	}
+
+	function returnCheckIfWinner() {
+		let isAllFlipped = true;
+
+		for (const card of cards) {
+			if (!card.flipped) {
+				isAllFlipped = false;
+			}
+		}
+
+		return isAllFlipped;
 	}
 
 	function initGame() {
