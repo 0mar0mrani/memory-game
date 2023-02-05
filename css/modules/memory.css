@@ -24,6 +24,7 @@
 .memory__card {
 	font-size: 2rem;
 	aspect-ratio: 3 / 4;
+	perspective: 40rem;
 }
 
 .memory__card--flipped {
