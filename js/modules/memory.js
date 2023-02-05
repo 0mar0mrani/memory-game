@@ -2,6 +2,9 @@ export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
 	const timeCardIsVisible = 1 * 1000;
+	
+	let attempts = 0;
+	const maxAttempts = 10;
 
 	let cards = returnCreateCards();
 	let cardsCopy = null;
@@ -10,7 +13,8 @@ export default function Memory() {
 	let flips = 0;
 	let previousClickedCardID = null;
 
-	const cardsContainerElement = document.querySelector('.memory__cards-container')
+	const cardsContainerElement = document.querySelector('.memory__cards-container');
+	const attemptsElement = document.querySelector('.memory__attempts');
 	let cardElements = null;
 
 	function setQuerySelectors() {
@@ -46,6 +50,7 @@ export default function Memory() {
 					cardsCopy = returnDeepCopy(cards);
 				} else {
 					cards = returnDeepCopy(cardsCopy);
+					attempts += 1;
 				}
 				
 				flips = 0;
@@ -110,8 +115,13 @@ export default function Memory() {
 	}
 
 	function renderHTML() {
+		renderAttempts();
 		renderFlippedCards();
 		
+		function renderAttempts() {
+			attemptsElement.innerText = `Attempts: ${attempts}/${maxAttempts}`;
+		}
+
 		function renderFlippedCards() {
 			for (let index = 0; index < cards.length; index += 1) {
 				if (cards[index].flipped) {
