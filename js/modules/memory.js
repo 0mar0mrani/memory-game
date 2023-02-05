@@ -37,8 +37,41 @@ export default function Memory() {
 			cardElements[index].addEventListener('click', () => {
 				handleCardElementClick(index);
 			})
+
+			cardElements[index].addEventListener('mousemove', handleCardElementMouseover);
+			cardElements[index].addEventListener('mouseleave', handleCardElementMouseleave);
 		}
 	}
+
+   function handleCardElementMouseover(event) {
+      const card = event.currentTarget;
+      const cardBackFrontContainer = event.currentTarget.firstChild;
+
+      const degrees = 20 * 0.01;
+
+      const cardPositions = card.getBoundingClientRect();
+
+      const cardWidth = card.offsetWidth;
+      const cardHeight = card.offsetHeight;
+
+      const centerXOfCard = cardWidth / 2;
+      const centerYOfCard = cardHeight / 2;
+
+      const mouseXCoordinatesOfCard = event.clientX - cardPositions.left;
+      const mouseYCoordinatesOfCard = event.clientY - cardPositions.top;
+
+      const xCoordinatesInPercentFromCenter = (mouseXCoordinatesOfCard - centerXOfCard) * 100 / centerXOfCard;
+      const CoordinatesInPercentFromCenter = (mouseYCoordinatesOfCard - centerYOfCard) * 100 / centerYOfCard;
+
+      cardBackFrontContainer.style.transform = `rotateY(${xCoordinatesInPercentFromCenter * degrees}deg) rotateX(${-1 * CoordinatesInPercentFromCenter * degrees}deg)`
+      cardBackFrontContainer.style.transition = 'transform 0.1s'
+   }
+
+   function handleCardElementMouseleave(event) {
+      const cardBackFrontContainer = event.currentTarget.firstChild;
+      cardBackFrontContainer.style.transform = 'rotateY(0deg) rotateX(0deg)'
+      cardBackFrontContainer.style.transition = 'transform 1s'
+   }
 
 	function handleResetButtonClick() {
 		initGame();
