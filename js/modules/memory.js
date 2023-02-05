@@ -1,6 +1,7 @@
 export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
+	const timeCardIsVisible = 1 * 1000;
 
 	let cards = returnCreateCards();
 	let cardsCopy = null;
@@ -19,34 +20,47 @@ export default function Memory() {
 	function setEventListeners() {
 		for (let index = 0; index < cardElements.length; index += 1) {
 			cardElements[index].addEventListener('click', () => {
-				handleCardButtonClick(index);
+				handleCardElementClick(index);
 			})
 		}
 	}
 
-	function handleCardButtonClick(cardElementIndex) {
+	function handleCardElementClick(cardElementIndex) {
 		const clickedCard = cards[cardElementIndex];
 
 		clickedCard.flipped = true;
 		flips += 1;
 
+
 		setIsRoundOver();
 
 		if (isRoundOver) {
-			const isMatch = returnCheckIsMatch(clickedCard.ID);
-
-			if (isMatch) {
-				cardsCopy = returnDeepCopy(cards);
-			} else {
-				cards = returnDeepCopy(cardsCopy)
+			for (const cardElement of cardElements) {
+				cardElement.classList.add('memory__card--disabled')
 			}
 
-			flips = 0;
-			isRoundOver = false;
+			setTimeout(() => {
+				const isMatch = returnCheckIsMatch(clickedCard.ID);
+
+				if (isMatch) {
+					cardsCopy = returnDeepCopy(cards);
+				} else {
+					cards = returnDeepCopy(cardsCopy);
+				}
+				
+				flips = 0;
+				isRoundOver = false;
+
+				for (const cardElement of cardElements) {
+					cardElement.classList.remove('memory__card--disabled')
+				}
+
+				renderHTML();				
+			}, timeCardIsVisible)
+		}	else {
+			previousClickedCardID = clickedCard.ID;
 		}
 
-		previousClickedCardID = clickedCard.ID;
-		console.log(cards);
 		renderHTML();
 	}
 
