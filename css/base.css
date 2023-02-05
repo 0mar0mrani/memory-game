@@ -6,4 +6,6 @@ html {
 
 body {
 	font-family: 'Press Start 2P', cursive;
+	color: var(--tertiary-color);
+	background-color: var(--secondary-color);
 }
