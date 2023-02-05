@@ -16,6 +16,17 @@ export default function Memory() {
 
 	let announcementMessage = null;
 
+	const oroImages = [
+		'/assets/image/oro1.jpg',
+		'/assets/image/oro2.jpg',
+		'/assets/image/oro3.jpg',
+		'/assets/image/oro4.jpg',
+		'/assets/image/oro5.jpg',
+		'/assets/image/oro6.jpg',
+		'/assets/image/oro7.jpg',
+		'/assets/image/oro8.jpg',
+	]
+
 	const cardsContainerElement = document.querySelector('.memory__cards-container');
 	const attemptsElement = document.querySelector('.memory__attempts');
 	const resetButtonElements = document.querySelectorAll('.memory__button-reset');
@@ -230,7 +241,7 @@ export default function Memory() {
 	function renderAllCards() {
 		cardsContainerElement.innerHTML = '';
 
-		for (const card of cards) {
+		for (let index = 0; index < cards.length; index += 1) {
 			const cardButton = document.createElement('button');
 			const cardFrontBackContainer = document.createElement('div');
 			const cardFront = document.createElement('div');
@@ -238,11 +249,11 @@ export default function Memory() {
 			const cardBack = document.createElement('div');
 			const cardBackText = document.createElement('div');
 
-			// cardBackText.innerText = '?';
-			cardBackText.innerText = `${card.ID}`;
+			const cardID = cards[index].ID;
+			cardFrontImage.src = oroImages[cardID];
 
-			cardFrontImage.src = '/assets/img/oro.jpg'
-
+			cardBackText.innerText = '?';
+			
 			cardButton.className = 'memory__card';
 			cardFrontBackContainer.className = 'memory__card-front-back-container';
 			cardFront.className = 'memory__card-front';
