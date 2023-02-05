@@ -8,16 +8,20 @@
 .memory__cards-container {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 0.5rem;
-	background-color: red;
+	gap: 1rem;
 }
 
 .memory__card {
 	font-size: 2rem;
-	padding: 1rem;
 	aspect-ratio: 3 / 4;
-	border-radius: 0.1rem;
-	position: relative;
+}
+
+.memory__card--flipped {
+	pointer-events: none;
+}
+
+.memory__card--disabled {
+	pointer-events: none;
 }
 
 .memory__card-front img {
@@ -26,20 +30,11 @@
 	object-fit: cover;
 }
 
-.memory__card--flipped {
-	pointer-events: none;
-}
-
 .memory__card-front-back-container {
-	position: absolute;
-	top: 0;
-	left: 0;
+	position: relative;
 	width: 100%;
 	height: 100%;
-
-	background-color: antiquewhite;
-	transition: transform 0.5s;
-	transform-style: preserve-3d;
+	perspective: 40rem;
 }
 
 .memory__card-front,
@@ -49,7 +44,11 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
+	border: solid 0.5rem #000;
+	border-radius: 0.2rem;
+	box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.398);
 	backface-visibility: hidden;
+	transition: transform 0.8s ease-in-out;
 }
 
 .memory__card-front {
@@ -60,9 +59,14 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: royalblue;
+	transform: rotateY(0deg);
 }
 
+.memory__card--flipped .memory__card-front {
+	transform: rotateY(0deg);
+}
 
-.memory__card--flipped .memory__card-front-back-container {
+.memory__card--flipped .memory__card-back {
 	transform: rotateY(180deg);
 }
