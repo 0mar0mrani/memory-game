@@ -3,7 +3,7 @@ export default function Memory() {
 	const numbersOfIdenticalCards = 2;
 	const timeCardIsVisible = 1 * 1000;
 	
-	const maxAttempts = 10;
+	const maxAttempts = 15;
 
 	let cards = null;
 	let cardsCopy = null;
@@ -291,7 +291,7 @@ export default function Memory() {
 				const cardID = cards[index].id;
 				cardFrontImage.src = oroImages[cardID];
 	
-				cardBackText.innerText = `${cardID}`;
+				cardBackText.innerText = `?`;
 				
 				cardButton.className = 'memory__card';
 				cardFrontBackContainer.className = 'memory__card-front-back-container';
