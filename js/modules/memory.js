@@ -2,7 +2,6 @@ export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
 	const timeCardIsVisible = 1 * 1000;
-	
 	const maxAttempts = 15;
 
 	let cards = null;
