@@ -2,11 +2,12 @@ export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
 	const timeCardIsVisible = 1 * 1000;
+	
+	const maxAttempts = 10;
 
 	let cards = null;
 	let cardsCopy = null;
 	let attempts = 0;
-	const maxAttempts = 10;
 	let isGameOver = false;
 	let isRoundOver = false;
 	let isNewGame = true;
@@ -40,7 +41,6 @@ export default function Memory() {
 	for (const resetButton of resetButtonElements) {
 		resetButton.addEventListener('click', handleResetButtonClick);
 	}
-
 
 	function setEventListeners() {
 		for (let index = 0; index < cardElements.length; index += 1) {
@@ -180,9 +180,9 @@ export default function Memory() {
 
 	/** Checks if the clicked card is the same as previous card(s) in the same round */
 	function returnCheckIsMatch(clickedCardID) {
-		const cardsIsIdentical = (cardId) => cardId === clickedCardID;
+		const cardsAreIdentical = (cardId) => cardId === clickedCardID;
 
-		if (previousClickedCardIDs.every(cardsIsIdentical)) {
+		if (previousClickedCardIDs.every(cardsAreIdentical)) {
 			return true;
 		} else {
 			return false;
@@ -291,7 +291,7 @@ export default function Memory() {
 				const cardID = cards[index].id;
 				cardFrontImage.src = oroImages[cardID];
 	
-				cardBackText.innerText = '?';
+				cardBackText.innerText = `${cardID}`;
 				
 				cardButton.className = 'memory__card';
 				cardFrontBackContainer.className = 'memory__card-front-back-container';
