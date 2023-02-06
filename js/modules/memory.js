@@ -2,18 +2,17 @@ export default function Memory() {
 	const numbersOfUniqueCards = 8;
 	const numbersOfIdenticalCards = 2;
 	const timeCardIsVisible = 1 * 1000;
-	
+
+	let cards = null;
+	let cardsCopy = null;
 	let attempts = 0;
 	const maxAttempts = 10;
-
-	let cards = returnCreateCards();
-	let cardsCopy = null;
-
 	let isGameOver = false;
 	let isRoundOver = false;
+	let isNewGame = true;
 	let flips = 0;
 	let previousClickedCardID = null;
-
+	let isCardsDisabled = false;
 	let announcementMessage = null;
 
 	const oroImages = [
@@ -55,33 +54,11 @@ export default function Memory() {
 	}
 
    function handleCardElementMouseover(event) {
-      const card = event.currentTarget;
-      const cardBackFrontContainer = event.currentTarget.firstChild;
-
-      const degrees = 20 * 0.01;
-
-      const cardPositions = card.getBoundingClientRect();
-
-      const cardWidth = card.offsetWidth;
-      const cardHeight = card.offsetHeight;
-
-      const centerXOfCard = cardWidth / 2;
-      const centerYOfCard = cardHeight / 2;
-
-      const mouseXCoordinatesOfCard = event.clientX - cardPositions.left;
-      const mouseYCoordinatesOfCard = event.clientY - cardPositions.top;
-
-      const xCoordinatesInPercentFromCenter = (mouseXCoordinatesOfCard - centerXOfCard) * 100 / centerXOfCard;
-      const CoordinatesInPercentFromCenter = (mouseYCoordinatesOfCard - centerYOfCard) * 100 / centerYOfCard;
-
-      cardBackFrontContainer.style.transform = `rotateY(${xCoordinatesInPercentFromCenter * degrees}deg) rotateX(${-1 * CoordinatesInPercentFromCenter * degrees}deg)`
-      cardBackFrontContainer.style.transition = 'transform 0.1s'
+      addHoverEffect(event);
    }
 
    function handleCardElementMouseleave(event) {
-      const cardBackFrontContainer = event.currentTarget.firstChild;
-      cardBackFrontContainer.style.transform = 'rotateY(0deg) rotateX(0deg)'
-      cardBackFrontContainer.style.transition = 'transform 1s'
+		removeHoverEffect(event);
    }
 
 	function handleResetButtonClick() {
@@ -94,20 +71,19 @@ export default function Memory() {
 
 		clickedCard.flipped = true;
 		flips += 1;
-
-		setIsRoundOver();
+		isNewGame = false;
+		isRoundOver = returnCheckIsRoundOver();
 
 		if (isRoundOver) {
-			for (const cardElement of cardElements) {
-				cardElement.classList.add('memory__card--disabled')
-			}
+			isCardsDisabled = true;
 
 			setTimeout(() => {
-				const isMatch = returnCheckIsMatch(clickedCard.ID);
+				const isMatch = returnCheckIsMatch(clickedCard.id);
 
 				if (isMatch) {
 					cardsCopy = returnDeepCopy(cards);
 					const isWinner = returnCheckIfWinner();
+
 					if (isWinner) {
 						isGameOver = true;
 						announcementMessage = 'You won!';
@@ -124,22 +100,17 @@ export default function Memory() {
 					}
 				}
 				
-				flips = 0;
-				isRoundOver = false;
-
-				for (const cardElement of cardElements) {
-					cardElement.classList.remove('memory__card--disabled')
-				}
-
-				renderHTML();				
+				initRound();
+				renderHTML();		
 			}, timeCardIsVisible)
 		}	else {
 			previousClickedCardID = clickedCard.ID;
 		}
-
+		
 		renderHTML();
 	}
 
+	/** Checks if all cards are flipped */
 	function returnCheckIfWinner() {
 		let isAllFlipped = true;
 
@@ -152,38 +123,52 @@ export default function Memory() {
 		return isAllFlipped;
 	}
 
+	/** Reset game when game is over */
 	function initGame() {
-		attempts = 0;
-		isRoundOver = false;
-		isGameOver = false;
-		flips = 0;
-		previousClickedCardID = null;
 		cards = returnCreateCards();
 		shuffleCards();
-		renderAllCards();
 		cardsCopy = returnDeepCopy(cards);
+		attempts = 0;
+		isGameOver = false;
+		isRoundOver = false;
+		isNewGame = true;
+		flips = 0;
+		
 	}
 
-	function setIsRoundOver() {
+	/** Reset game when the round is over */
+	function initRound() {
+		isCardsDisabled = false;
+		flips = 0;
+		isRoundOver = false;
+		previousClickedCardID = null;
+	}
+
+	/** Checks if round is over */
+	function returnCheckIsRoundOver() {
 		const maxFlips = numbersOfIdenticalCards;
 
 		if (flips === maxFlips) {
-			isRoundOver = true;
+			return true;
+		} else {
+			return false;
 		}
 	}
 
+	/** Creates a deep copy of cards */
 	function returnDeepCopy(cards) {
 		const cardsStringed = JSON.stringify(cards);
 		return JSON.parse(cardsStringed);
 	}
 
+	/** Creates card objects and pushes it into an array based on numbersOfIdenticalCards & numbersOfUniqueCards */
 	function returnCreateCards() {
 		let newCards = [];
 
 		for (let index = 0; index < numbersOfIdenticalCards; index += 1) {
 			for (let index = 0; index < numbersOfUniqueCards; index += 1) {
 				const object = {
-					ID: index,
+					id: index,
 					flipped: false,
 				}
 				newCards.push(object);
@@ -201,6 +186,7 @@ export default function Memory() {
 		}
 	}
 
+	/** Shuffles the order of cards, this way of shuffling is called 'Fisher–Yates shuffle' */
 	function shuffleCards() {
 		for (let index = cards.length - 1; index > 0; index -= 1) {
 			const randomIndex = Math.floor(Math.random() * (index + 1));
@@ -209,10 +195,49 @@ export default function Memory() {
 		}
 	}
 
+	function addHoverEffect(event) {
+		const card = event.currentTarget;
+      const cardBackFrontContainer = event.currentTarget.firstChild;
+
+      const degrees = 20 * 0.01;
+
+      const cardPositions = card.getBoundingClientRect();
+
+      const cardWidth = card.offsetWidth;
+      const cardHeight = card.offsetHeight;
+
+      const centerXOfCard = cardWidth / 2;
+      const centerYOfCard = cardHeight / 2;
+
+      const mouseXCoordinatesOfCard = event.clientX - cardPositions.left;
+      const mouseYCoordinatesOfCard = event.clientY - cardPositions.top;
+
+      const xCoordinatesInPercentFromCenter = (mouseXCoordinatesOfCard - centerXOfCard) * 100 / centerXOfCard;
+      const yCoordinatesInPercentFromCenter = (mouseYCoordinatesOfCard - centerYOfCard) * 100 / centerYOfCard;
+
+      cardBackFrontContainer.style.transform = `rotateY(${xCoordinatesInPercentFromCenter * degrees}deg) rotateX(${-1 * yCoordinatesInPercentFromCenter * degrees}deg)`
+      cardBackFrontContainer.style.transition = 'transform 0.1s'
+	}
+
+	function removeHoverEffect(event) {
+		const cardBackFrontContainer = event.currentTarget.firstChild;
+      cardBackFrontContainer.style.transform = 'rotateY(0deg) rotateX(0deg)'
+      cardBackFrontContainer.style.transition = 'transform 1s'
+	}
+
 	function renderHTML() {
+		if(isNewGame) {
+			renderCards();
+		}
 		renderAttempts();
 		renderFlippedCards();
 		renderAnnouncement();
+
+		if (isCardsDisabled) {
+			renderDisableCards(); 
+		} else {
+			renderEnableCard();
+		}
 
 		function renderAttempts() {
 			attemptsElement.innerText = `Attempts: ${attempts}/${maxAttempts}`;
@@ -236,45 +261,55 @@ export default function Memory() {
 				announcementElement.classList.remove('memory__announcement--open');
 			}
 		}
-	}
 
-	function renderAllCards() {
-		cardsContainerElement.innerHTML = '';
-
-		for (let index = 0; index < cards.length; index += 1) {
-			const cardButton = document.createElement('button');
-			const cardFrontBackContainer = document.createElement('div');
-			const cardFront = document.createElement('div');
-			const cardFrontImage = document.createElement('img');
-			const cardBack = document.createElement('div');
-			const cardBackText = document.createElement('div');
-
-			const cardID = cards[index].ID;
-			cardFrontImage.src = oroImages[cardID];
-
-			cardBackText.innerText = '?';
-			
-			cardButton.className = 'memory__card';
-			cardFrontBackContainer.className = 'memory__card-front-back-container';
-			cardFront.className = 'memory__card-front';
-			cardBack.className = 'memory__card-back';
-			cardBackText.className = 'memory__card-back-text';
-
-			cardFront.append(cardFrontImage);
-			cardBack.append(cardBackText);
-			cardFrontBackContainer.append(cardFront);
-			cardFrontBackContainer.append(cardBack);
-			cardButton.append(cardFrontBackContainer);
-			cardsContainerElement.append(cardButton);
+		function renderDisableCards() {
+			for (const cardElement of cardElements) {
+				cardElement.classList.add('memory__card--disabled')
+			}
 		}
 
-		setQuerySelectors();
-		setEventListeners();
+		function renderEnableCard() {
+			for (const cardElement of cardElements) {
+				cardElement.classList.remove('memory__card--disabled')
+			}
+		}
+
+		function renderCards() {
+			cardsContainerElement.innerHTML = '';
+	
+			for (let index = 0; index < cards.length; index += 1) {
+				const cardButton = document.createElement('button');
+				const cardFrontBackContainer = document.createElement('div');
+				const cardFront = document.createElement('div');
+				const cardFrontImage = document.createElement('img');
+				const cardBack = document.createElement('div');
+				const cardBackText = document.createElement('div');
+	
+				const cardID = cards[index].id;
+				cardFrontImage.src = oroImages[cardID];
+	
+				cardBackText.innerText = '?';
+				
+				cardButton.className = 'memory__card';
+				cardFrontBackContainer.className = 'memory__card-front-back-container';
+				cardFront.className = 'memory__card-front';
+				cardBack.className = 'memory__card-back';
+				cardBackText.className = 'memory__card-back-text';
+	
+				cardFront.append(cardFrontImage);
+				cardBack.append(cardBackText);
+				cardFrontBackContainer.append(cardFront);
+				cardFrontBackContainer.append(cardBack);
+				cardButton.append(cardFrontBackContainer);
+				cardsContainerElement.append(cardButton);
+			}
+	
+			setQuerySelectors();
+			setEventListeners();
+		}
 	}
  
 	// Called functions
-	shuffleCards();
-	cardsCopy = returnDeepCopy(cards);
-	renderAllCards();
+	initGame();
 	renderHTML();
 }
