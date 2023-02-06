@@ -11,7 +11,7 @@ export default function Memory() {
 	let isRoundOver = false;
 	let isNewGame = true;
 	let flips = 0;
-	let previousClickedCardID = null;
+	let previousClickedCardIDs = [];
 	let isCardsDisabled = false;
 	let announcementMessage = null;
 
@@ -104,7 +104,7 @@ export default function Memory() {
 				renderHTML();		
 			}, timeCardIsVisible)
 		}	else {
-			previousClickedCardID = clickedCard.ID;
+			previousClickedCardIDs.push(clickedCard.id);
 		}
 		
 		renderHTML();
@@ -133,7 +133,7 @@ export default function Memory() {
 		isRoundOver = false;
 		isNewGame = true;
 		flips = 0;
-		
+		previousClickedCardIDs = [];
 	}
 
 	/** Reset game when the round is over */
@@ -141,7 +141,7 @@ export default function Memory() {
 		isCardsDisabled = false;
 		flips = 0;
 		isRoundOver = false;
-		previousClickedCardID = null;
+		previousClickedCardIDs = [];
 	}
 
 	/** Checks if round is over */
@@ -178,8 +178,11 @@ export default function Memory() {
 		return newCards;	
 	}
 
+	/** Checks if the clicked card is the same as previous card(s) in the same round */
 	function returnCheckIsMatch(clickedCardID) {
-		if (clickedCardID === previousClickedCardID) {
+		const cardsIsIdentical = (cardId) => cardId === clickedCardID;
+
+		if (previousClickedCardIDs.every(cardsIsIdentical)) {
 			return true;
 		} else {
 			return false;
