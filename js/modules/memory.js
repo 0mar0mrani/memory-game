@@ -52,6 +52,10 @@ export default function Memory() {
 		}
 	}
 
+	// Called functions
+	initGame();
+	renderHTML();
+
    function handleCardElementMouseover(event) {
       addHoverEffect(event);
    }
@@ -83,6 +87,8 @@ export default function Memory() {
 					cardsCopy = returnDeepCopy(cards);
 					const isWinner = returnCheckIfWinner();
 
+					console.log(isWinner);
+
 					if (isWinner) {
 						isGameOver = true;
 						announcementMessage = 'You won!';
@@ -94,9 +100,7 @@ export default function Memory() {
 					if (attempts >= maxAttempts) {
 						isGameOver = true;
 						announcementMessage = 'You lost, try again!';
-					} else {
-						isGameOver = false;
-					}
+					} 
 				}
 				
 				initRound();
@@ -111,15 +115,7 @@ export default function Memory() {
 
 	/** Checks if all cards are flipped */
 	function returnCheckIfWinner() {
-		let isAllFlipped = true;
-
-		for (const card of cards) {
-			if (!card.flipped) {
-				isAllFlipped = false;
-			}
-		}
-
-		return isAllFlipped;
+		return cards.every(card => card.flipped === true)
 	}
 
 	/** Reset game when game is over */
@@ -181,11 +177,7 @@ export default function Memory() {
 	function returnCheckIsMatch(clickedCardID) {
 		const cardsAreIdentical = (cardId) => cardId === clickedCardID;
 
-		if (previousClickedCardIDs.every(cardsAreIdentical)) {
-			return true;
-		} else {
-			return false;
-		}
+		return previousClickedCardIDs.every(cardsAreIdentical);
 	}
 
 	/** Shuffles the order of cards, this way of shuffling is called 'Fisher–Yates shuffle' */
@@ -310,8 +302,4 @@ export default function Memory() {
 			setEventListeners();
 		}
 	}
- 
-	// Called functions
-	initGame();
-	renderHTML();
 }
